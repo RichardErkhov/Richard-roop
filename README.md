@@ -41,6 +41,7 @@ options:
   -o OUTPUT_FILE, --output OUTPUT_FILE
                         save output to this file
   --gpu                 use gpu
+  --gpu-threads N       Number of gpu threads. The default is 4. Depending on the number, the video memory consumption increases. 6 threads consume about 8 Gb of VRM.
   --keep-fps            maintain original fps
   --keep-frames         keep frames directory
   --max-memory MAX_MEMORY
