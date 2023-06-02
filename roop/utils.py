@@ -1,6 +1,6 @@
 import os
 import shutil
-
+import cv2
 sep = "/"
 if os.name == "nt":
     sep = "\\"
@@ -62,3 +62,13 @@ def is_img(path):
 def rreplace(s, old, new, occurrence):
     li = s.rsplit(old, occurrence)
     return new.join(li)
+
+def open_video(path):
+    return cv2.VideoCapture(path)
+
+def open_video_writer(original_video, out, fps):
+    width = int(original_video.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(original_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    output_video = cv2.VideoWriter( os.path.join(out, "output.mp4"), fourcc, fps, (width, height))
+    return output_video

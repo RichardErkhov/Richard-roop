@@ -1,92 +1,101 @@
 from roop.swapper import get_face_swapper
 from roop.analyser import get_face_analyser
-from threading import Thread
+from roop.utils import open_video, open_video_writer
 import cv2
 from tqdm import tqdm
 import os
 from roop.analyser import get_face_single, get_face_many
-#creates a thread and returns value when joined
-class ThreadWithReturnValue(Thread):
-    
-    def __init__(self, group=None, target=None, name=None,
-                 args=(), kwargs={}, Verbose=None):
-        Thread.__init__(self, group, target, name, args, kwargs)
-        self._return = None
-
-    def run(self):
-        if self._target is not None:
-            self._return = self._target(*self._args,
-                                                **self._kwargs)
-    def join(self, *args):
-        Thread.join(self, *args)
-        return self._return
-
-def face_analyser_thread(i, source_face):
-    #trying to find the face
-    try:
-        face = sorted(face_analyser.get(i), key=lambda x: x.bbox[0])[0]
-    except:
-        face = None
-    yes_face = False
-    #if face found, swapping it
-    if face: 
-        yes_face = True
-        result = swap.get(i, face, source_face, paste_back=True)
-    else:
-        #if we didn't find, returning original frame
-        result = i
-    #returning if we got face and result frame 
-    return yes_face, result
+from roop.thread_handling import create_thread, get_result_from_thread
+import roop.globals
+import time
 
 def face_analyser_thread(frame, source_face, all_faces):
-    yes_face = False
+    has_face = False
     if all_faces:
         many_faces = get_face_many(frame)
         if many_faces:
             for face in many_faces:
                 frame = swap.get(frame, face, source_face, paste_back=True)
-            yes_face = True
+            has_face = True
     else:
         face = get_face_single(frame)
         if face:
             frame = swap.get(frame, face, source_face, paste_back=True)
-            yes_face = True   
-    return yes_face, frame
-
-
+            has_face = True   
+    return has_face, frame
 def process_video_gpu(source_img, source_video, out, fps, gpu_threads, all_faces):
     global face_analyser, swap
     swap = get_face_swapper()
     face_analyser = get_face_analyser()
     source_face = get_face_single(cv2.imread(source_img))
-    #opening input video for read
-    cap = cv2.VideoCapture(source_video)
-    #opening output video for writing
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    output_video = cv2.VideoWriter( os.path.join(out, "output.mp4"), fourcc, fps, (width, height))
-    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    video = open_video(source_video)
+    output_video = open_video_writer(video, out, fps)
+    frame_count = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
     temp = []
+    counter = 0
     with tqdm(total=frame_count, desc='Processing', unit="frame", dynamic_ncols=True, bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}{postfix}]') as progress:
         while True:
-            #getting frame
-            ret, frame = cap.read()
+            ret, frame = video.read()
             if not ret:
                 break
-            #we are having an array of length %gpu_threads%, running in parallel
-            #so if array is equal or longer than gpu threads, waiting 
+
             while len(temp) >= gpu_threads:
-                #we are order dependent, so we are forced to wait for first element to finish. When finished removing thread from the list
-                has_face, x = temp.pop(0).join()
-                #writing into output
+                waiting_for = temp[0][0]
+                result_found = False
+                while result_found == False:
+                    for number, thread in enumerate(roop.globals.results):
+                        if thread[0] == waiting_for:
+                            result_found = True
+                            break
+                result = roop.globals.results.pop(number)[1]
+                temp.pop(0)
+                has_face, x = result
+                #has_face, x = get_result_from_thread(first_thread)
                 output_video.write(x)
-                #updating the status
                 if has_face:
                     progress.set_postfix(status='.', refresh=True)
                 else:
                     progress.set_postfix(status='S', refresh=True)
                 progress.update(1)
-            #adding new frame to the list and starting it 
-            temp.append(ThreadWithReturnValue(target=face_analyser_thread, args=(frame, source_face, all_faces)))
-            temp[-1].start()
+                counter += 1
+            a = create_thread(face_analyser_thread, counter, (frame,  source_face, all_faces))
+            a.start()
+            temp.append([counter, a])
+
+def process_video_gpus(source_img, source_video, out, fps, gpu_threads, all_faces):
+    global face_analyser, swap
+    swap = get_face_swapper()
+    face_analyser = get_face_analyser()
+    source_face = get_face_single(cv2.imread(source_img))
+    video = open_video(source_video)
+    output_video = open_video_writer(video, out, fps)
+    frame_count = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
+    temp = []
+    counter = 0
+    with tqdm(total=frame_count, desc='Processing', unit="frame", dynamic_ncols=True, bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}{postfix}]') as progress:
+        while True:
+            ret, frame = video.read()
+            if not ret:
+                break
+            while len(temp) >= gpu_threads:
+                #first_thread = temp.pop(0)
+                result_found = False
+                while result_found == False:
+                    for number, thread in enumerate(roop.globals.results):
+                        if thread[0] == counter:
+                            result_found = True
+                    time.sleep(0.001)
+                result = roop.globals.results.pop(number)[1]
+                temp.pop(0)
+                has_face, x = result
+                #has_face, x = get_result_from_thread(first_thread)
+                output_video.write(x)
+                if has_face:
+                    progress.set_postfix(status='.', refresh=True)
+                else:
+                    progress.set_postfix(status='S', refresh=True)
+                progress.update(1)
+                counter += 1
+            a = create_thread(face_analyser_thread, counter, (frame,  source_face, all_faces))
+            a.start()
+            temp.append([counter, a])
