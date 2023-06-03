@@ -28,6 +28,14 @@ and yes, don't forget to download ffmpeg https://ffmpeg.org/download.html
 and inswrapper_128.onnx https://drive.google.com/file/d/1eu60OrRtn4WhKrzM4mQv4F3rIuyUXqfl/view?usp=drive_link
 ```
 
+# usage example 
+```
+#usage is simple:
+python run.py --gpu --gpu-threads %number_of_threads%
+```
+for number of threads I recommend to play, for nice approximation of first step is:
+amount of threads = (GPU VRAM - 1)/800
+
 That's it, that's the software. You can watch some demos [here](https://drive.google.com/drive/folders/1KHv8n_rd3Lcr2v7jBq1yPSTWM554Gq8e?usp=sharing).
 
 ![demo-gif](demo.gif)
