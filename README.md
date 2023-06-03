@@ -1,7 +1,7 @@
 # Join the discord server (this is not official roop server!) https://discord.gg/hzrJBGPpgN
 Take a video and replace the face in it with a face of your choice. You only need one image of the desired face. No dataset, no training.
 
-#easy installation guide
+# easy installation guide for windows users
 ```
 1) install visual studio 2022 with desktop development C++ and python development (not sure about python development)
 2) install python 3.10.x (any 3.10)
