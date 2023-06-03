@@ -65,7 +65,8 @@ def process_video_gpu(source_img, source_video, out, fps, gpu_threads, all_faces
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    output_video = cv2.VideoWriter( os.path.join(out, "output.mp4"), fourcc, fps, (width, height))
+    output_video = cv2.VideoWriter( os.path.join(out, "output.mp4"), fourcc, round(float(fps)), (width, height))
+    output_video.set(cv2.VIDEOWRITER_PROP_QUALITY, 100)
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     temp = []
     with tqdm(total=frame_count, desc='Processing', unit="frame", dynamic_ncols=True, bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}{postfix}]') as progress:

@@ -47,11 +47,11 @@ def extract_frames(input_path, output_dir):
 def add_audio(output_dir, target_path, video, keep_frames, output_file, gpu):
     video_name = os.path.splitext(video)[0]
     save_to = output_file if output_file else output_dir + "/swapped-" + video_name + ".mp4"
-    save_to_ff, output_dir_ff = path(save_to), path(output_dir)
-    os.system(f'ffmpeg -i "{output_dir_ff}{sep}output.mp4" -i "{output_dir_ff}{sep}{video}" -c:v copy -map 0:v:0 -map 1:a:0 -y "{save_to_ff}"')
+    save_to_ff, output_dir_ff, target_path_ff = path(save_to), path(output_dir), path(target_path)
+    os.system(f'ffmpeg -i "{output_dir_ff}{sep}output.mp4" -i "{target_path_ff}" -c:v copy -map 0:v:0 -map 1:a:0 -y "{save_to_ff}"')
     if not os.path.isfile(save_to):
         shutil.move(output_dir + "/output.mp4", save_to)
-    if not keep_frames and not gpu:
+    if not keep_frames:
         shutil.rmtree(output_dir)
 
 
