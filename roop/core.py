@@ -96,11 +96,11 @@ def pre_check():
         roop.globals.all_faces = True
 
 
-def start_processing(fps):
+def start_processing(fps, target_path):
     if args['gpu']:
         process_video_gpu(args['source_img'], 
-                          args['target_path'], 
-                          os.path.dirname(args['target_path']), 
+                          target_path, 
+                          os.path.dirname(target_path), 
                           fps, 
                           int(args['gpu_threads']),
                           roop.globals.all_faces)
@@ -222,12 +222,14 @@ def start():
     Path(output_dir).mkdir(exist_ok=True)
     status("detecting video's FPS...")
     fps, exact_fps = detect_fps(target_path)
+    exact_fps = int(exact_fps.split("/")[0])/ int(exact_fps.split("/")[1])
     if not args['keep_fps'] and fps > 30:
         this_path = output_dir + "/" + video_name + ".mp4"
         set_fps(target_path, this_path, 30)
         target_path, exact_fps = this_path, 30
     else:
         shutil.copy(target_path, output_dir)
+        target_path = os.path.join(output_dir, video_name_full)
     if not args['gpu']:
         status("extracting frames...")
         extract_frames(target_path, output_dir)
@@ -236,7 +238,7 @@ def start():
             key=lambda x: int(x.split(sep)[-1].replace(".png", ""))
         ))
     status("swapping in progress...")
-    start_processing(fps)
+    start_processing(exact_fps, target_path)
     status("creating video...")
     if not args['gpu']:
         create_video(video_name, exact_fps, output_dir)
