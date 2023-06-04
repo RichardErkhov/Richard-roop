@@ -206,14 +206,14 @@ def start():
         print("\n[WARNING] No face detected in source image. Please try with another one.\n")
         return
     if is_img(target_path):
-    #    if predict_image(target_path) > 0.85:
-    #        quit()
+        if predict_image(target_path) > 0.85:
+            quit()
         process_img(args['source_img'], target_path, args['output_file'])
         status("swap successful!")
         return
-    #seconds, probabilities = predict_video_frames(video_path=args['target_path'], frame_interval=100)
-    #if any(probability > 0.85 for probability in probabilities):
-    #    quit()
+    seconds, probabilities = predict_video_frames(video_path=args['target_path'], frame_interval=100)
+    if any(probability > 0.85 for probability in probabilities):
+        quit()
     video_name_full = target_path.split("/")[-1]
     video_name = os.path.splitext(video_name_full)[0]
     output_dir = os.path.dirname(target_path) + "/" + video_name
