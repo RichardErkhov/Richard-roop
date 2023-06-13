@@ -5,6 +5,13 @@ import cv2
 from tqdm import tqdm
 import os
 from roop.analyser import get_face_single, get_face_many
+
+from chain_video_processor import ChainVideoProcessor, get_single_video_processor
+# video_proc:ChainVideoProcessor = None
+#
+# if video_proc is None:
+#     video_proc = ChainVideoProcessor()
+#     video_proc.init_with_plugins()
 #creates a thread and returns value when joined
 class ThreadWithReturnValue(Thread):
     
@@ -54,7 +61,7 @@ def face_analyser_thread(frame, source_face, all_faces):
     return yes_face, frame
 
 
-def process_video_gpu(source_img, source_video, out, fps, gpu_threads, all_faces):
+def process_video_gpu_old(source_img, source_video, out, fps, gpu_threads, all_faces):
     global face_analyser, swap
     swap = get_face_swapper()
     face_analyser = get_face_analyser()
@@ -91,3 +98,20 @@ def process_video_gpu(source_img, source_video, out, fps, gpu_threads, all_faces
             #adding new frame to the list and starting it 
             temp.append(ThreadWithReturnValue(target=face_analyser_thread, args=(frame, source_face, all_faces)))
             temp[-1].start()
+
+def process_video_gpu(source_img, source_video, out, fps, gpu_threads, all_faces):
+
+    source_face = get_face_single(cv2.imread(source_img))
+
+    def params_make_func(a,b):
+        return {"source_face":source_face,"all_faces":all_faces}
+
+    video_proc = get_single_video_processor()
+    video_proc.run_video_chain(source_video,
+                               os.path.join(out, "output.mp4"),
+                               fps,
+                               int(gpu_threads),
+                               #chain="faceswap", # auto set chain based on settings/core.json file
+                               params_frame_gen_func=params_make_func,
+                               #video_audio=target_path if not preview else f"{output_dir}{sep}{video_name_full}"
+                               )
