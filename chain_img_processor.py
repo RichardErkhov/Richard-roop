@@ -4,7 +4,7 @@ from termcolor import colored, cprint
 
 from typing import Any
 
-version = "3.1.1"
+version = "3.1.2"
 
 
 class ChainImgProcessor(JaaCore):
@@ -128,3 +128,11 @@ class ChainImgPlugin:
         pass
     def process(self, img, params:dict): # process img. Called multiple
         return img
+
+_img_processor:ChainImgProcessor = None
+def get_single_image_processor() -> ChainImgProcessor:
+    global _img_processor
+    if _img_processor is None:
+        _img_processor = ChainImgProcessor()
+        _img_processor.init_with_plugins()
+    return _img_processor
