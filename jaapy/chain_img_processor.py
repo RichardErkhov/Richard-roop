@@ -1,7 +1,5 @@
-from jaa import JaaCore
-
+from jaapy.jaa import JaaCore
 from termcolor import colored, cprint
-
 from typing import Any
 
 version = "3.1.2"

@@ -6,7 +6,8 @@ from tqdm import tqdm
 import os
 from roop.analyser import get_face_single, get_face_many
 
-from chain_video_processor import ChainVideoProcessor, get_single_video_processor
+from jaapy.chain_video_processor import ChainVideoProcessor, get_single_video_processor
+
 # video_proc:ChainVideoProcessor = None
 #
 # if video_proc is None:

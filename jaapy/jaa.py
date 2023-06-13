@@ -43,17 +43,7 @@ Python 3.5+ (due to dict mix in final_options calc), can be relaxed
 import os
 import traceback
 import json
-
-# here we trying to use termcolor to highlight plugin info and errors during load
-try:
-    from termcolor import cprint
-except Exception as e:
-    # not found? making a stub!
-    def cprint(p,color=None):
-        if color == None:
-            print(p)
-        else:
-            print(str(color).upper(),p)
+from termcolor import cprint
 
 version = "2.2.0"
 
@@ -91,7 +81,7 @@ class JaaCore:
     def init_plugin(self,modname):
         # import
         try:
-            mod = self.import_plugin("plugins."+modname)
+            mod = self.import_plugin("jaapy.plugins."+modname)
         except Exception as e:
             self.print_error("JAA PLUGIN ERROR: {0} error on load: {1}".format(modname, str(e)))
             return False

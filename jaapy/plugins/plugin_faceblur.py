@@ -1,6 +1,6 @@
 # Faceblur
 
-from chain_img_processor import ChainImgProcessor, ChainImgPlugin
+from jaapy.chain_img_processor import ChainImgProcessor, ChainImgPlugin
 import os
 
 modname = os.path.basename(__file__)[:-3] # calculating modname

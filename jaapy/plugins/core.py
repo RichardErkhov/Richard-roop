@@ -1,7 +1,7 @@
 # Core plugin
 # author: Vladislav Janvarev
 
-from chain_img_processor import ChainImgProcessor
+from jaapy.chain_img_processor import ChainImgProcessor
 
 # start function
 def start(core:ChainImgProcessor):
