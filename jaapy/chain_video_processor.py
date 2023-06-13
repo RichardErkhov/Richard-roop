@@ -2,6 +2,9 @@ from threading import Thread
 from jaapy.chain_img_processor import ChainImgProcessor
 from termcolor import colored, cprint
 from typing import Any
+import cv2
+from tqdm import tqdm
+from jaapy.ffmpeg_writer import FFMPEG_VideoWriter # ffmpeg install needed
 
 class ThreadWithReturnValue(Thread):
 
@@ -12,8 +15,7 @@ class ThreadWithReturnValue(Thread):
 
     def run(self):
         if self._target is not None:
-            self._return = self._target(*self._args,
-                                        **self._kwargs)
+            self._return = self._target(*self._args, **self._kwargs)
 
     def join(self, *args):
         Thread.join(self, *args)
@@ -26,9 +28,6 @@ class ChainVideoProcessor(ChainImgProcessor):
         ChainImgProcessor.__init__(self)
 
     def run_video_chain(self, source_video, target_video, fps, threads:int = 1, chain = None, params_frame_gen_func = None, video_codec = "libx265", video_crf = 14, video_audio = None):
-        import cv2
-        from tqdm import tqdm
-        from jaapy.ffmpeg_writer import FFMPEG_VideoWriter # ffmpeg install needed
 
         cap = cv2.VideoCapture(source_video)
         # width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -111,9 +110,6 @@ class ChainVideoProcessor(ChainImgProcessor):
                 #print("FINAL", locks)
 
     def run_video_chain_single_processor(self, source_video, target_video, fps, threads:int = 1, chain = None, params_frame_gen_func = None, video_codec = "libx265", video_crf = 14, video_audio = None):
-        import cv2
-        from tqdm import tqdm
-        from ffmpeg_writer import FFMPEG_VideoWriter # ffmpeg install needed
 
         cap = cv2.VideoCapture(source_video)
         # width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
