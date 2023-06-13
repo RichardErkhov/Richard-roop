@@ -99,7 +99,7 @@ def process_video_gpu_old(source_img, source_video, out, fps, gpu_threads, all_f
             temp.append(ThreadWithReturnValue(target=face_analyser_thread, args=(frame, source_face, all_faces)))
             temp[-1].start()
 
-def process_video_gpu(source_img, source_video, out, fps, gpu_threads, all_faces):
+def process_video_gpu(source_img, source_video, out, fps, gpu_threads, all_faces, codec = "libx264"):
 
     source_face = get_face_single(cv2.imread(source_img))
 
@@ -114,4 +114,5 @@ def process_video_gpu(source_img, source_video, out, fps, gpu_threads, all_faces
                                #chain="faceswap", # auto set chain based on settings/core.json file
                                params_frame_gen_func=params_make_func,
                                #video_audio=target_path if not preview else f"{output_dir}{sep}{video_name_full}"
+                               video_codec = codec
                                )
