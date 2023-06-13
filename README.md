@@ -38,4 +38,33 @@ amount of threads = (GPU VRAM - 1)/800
 
 ![demo-gif](demo.gif)
 
+# Face enchancement
+
+You can also apply face enchancement by codeformer (slow!!)
+
+To do:
+- Download plugin here: https://github.com/janvarev/chain-img-plugin-codeformer
+- Copy it to plugins folder
+- Install requirements.txt
+- In options/core.json change "default_chain": "faceswap,codeformer"
+
+Or if you want just enhance your video:
+- In options/core.json change "default_chain": "codeformer"
+
+It's recommended to set settings in options/codeformer.json like:
+```json
+{
+    "background_enhance": false,
+    "codeformer_fidelity": 0.5,
+    "face_upsample": true,
+    "skip_if_no_face": true,
+    "upscale": 1
+}
+```
+
+
+# Special thanks
+
+https://github.com/janvarev/chain-img-processor licensed under MIT
+
 
