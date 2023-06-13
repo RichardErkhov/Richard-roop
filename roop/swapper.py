@@ -61,6 +61,11 @@ def process_img(source_img, target_path, output_file):
     frame = cv2.imread(target_path)
     face = get_face_single(frame)
     source_face = get_face_single(cv2.imread(source_img))
-    result = get_face_swapper().get(frame, face, source_face, paste_back=True)
+    #result = get_face_swapper().get(frame, face, source_face, paste_back=True)
+    from chain_img_processor import get_single_image_processor
+    img_processor = get_single_image_processor()
+
+    result, params = img_processor.run_chain(frame, {"source_face":source_face,"all_faces":roop.globals.all_faces})
+
     cv2.imwrite(output_file, result)
     print("\n\nImage saved as:", output_file, "\n\n")
