@@ -44,7 +44,7 @@ parser.add_argument('--max-memory', help='maximum amount of RAM in GB to be used
 parser.add_argument('--max-cores', help='number of cores to be use for CPU mode', dest='cores_count', type=int, default=max(psutil.cpu_count() - 2, 2))
 parser.add_argument('--all-faces', help='swap all faces in frame', dest='all_faces', action='store_true', default=False)
 parser.add_argument('--gpu-threads', help='number of threads for gpu to run in parallel', dest='gpu_threads', type=int, default=4)
-parser.add_argument('--codec', help='libx264 (put 4) ot libx265 (put 5)', dest='codec', type=int, default=4)
+parser.add_argument('--codec', help='video encoder (libx264 or libx265)', dest='codec', default='libx264', choices=['libx264', 'libx265'])
 for name, value in vars(parser.parse_args()).items():
     args[name] = value
 
@@ -263,13 +263,6 @@ def run():
     if args['source_img']:
         args['cli_mode'] = True
         start()
-        quit()
-    if args['codec'] == 4:
-        args['codec'] = "libx264"
-    elif args['codec'] == 5:
-        args['codec'] = "libx265"
-    else:
-        print("wrong codec, please advise the guide")
         quit()
     window = tk.Tk()
     window.geometry("600x700")
