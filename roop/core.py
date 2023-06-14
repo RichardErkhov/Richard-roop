@@ -257,6 +257,9 @@ def start():
 def run():
     global status_label, window, all_faces, limit_fps, keep_frames
 
+    from chain_img_processor import get_single_video_processor
+    videoproc = get_single_video_processor() # get processor to warmup
+
     pre_check()
     limit_resources()
 
