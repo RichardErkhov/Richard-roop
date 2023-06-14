@@ -51,10 +51,6 @@ for name, value in vars(parser.parse_args()).items():
 if '--all-faces' in sys.argv or '-a' in sys.argv:
     roop.globals.all_faces = True
 
-sep = "/"
-if os.name == "nt":
-    sep = "\\"
-
 
 def limit_resources():
     if args['max_memory']:
@@ -222,17 +218,17 @@ def start():
     seconds, probabilities = predict_video_frames(video_path=args['target_path'], frame_interval=100)
     if any(probability > 0.85 for probability in probabilities):
         quit()
-    video_name_full = target_path.split("/")[-1]
+    video_name_full = os.path.basename(target_path)
     video_name = os.path.splitext(video_name_full)[0]
-    output_dir = os.path.dirname(target_path) + "/" + video_name
+    output_dir = os.path.join(os.path.dirname(target_path), video_name)
     if output_dir.startswith("/"):
         output_dir = "." + output_dir
-    Path(output_dir).mkdir(exist_ok=True)
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
     status("detecting video's FPS...")
     fps, exact_fps = detect_fps(target_path)
     exact_fps = int(exact_fps.split("/")[0])/ int(exact_fps.split("/")[1])
     if not args['keep_fps'] and fps > 30:
-        this_path = output_dir + "/" + video_name + ".mp4"
+        this_path = os.path.join(output_dir, video_name+".mp4")
         set_fps(target_path, this_path, 30)
         target_path, exact_fps = this_path, 30
     else:
@@ -242,8 +238,8 @@ def start():
         status("extracting frames...")
         extract_frames(target_path, output_dir)
         args['frame_paths'] = tuple(sorted(
-            glob.glob(output_dir + "/*.png"),
-            key=lambda x: int(x.split(sep)[-1].replace(".png", ""))
+            glob.glob("*.png", root_dir=output_dir),
+            key=lambda x: int(x.replace(".png", ""))
         ))
     status("swapping in progress...")
     start_processing(exact_fps, target_path)
@@ -252,10 +248,10 @@ def start():
         create_video(video_name, exact_fps, output_dir)
     status("adding audio...")
     if args['gpu']:
-        add_audio(os.path.join(os.path.dirname(target_path)), target_path, video_name_full, args['keep_frames'], args['output_file'], gpu = args['gpu'])
+        add_audio(os.path.join(os.path.dirname(target_path)), target_path, video_name_full, args['keep_frames'], args['output_file'], gpu=args['gpu'])
     else:
         add_audio(output_dir, target_path, video_name_full, args['keep_frames'], args['output_file'], gpu=False)
-    save_path = args['output_file'] if args['output_file'] else output_dir + "/" + video_name + ".mp4"
+    save_path = args['output_file'] if args['output_file'] else os.path.join(output_dir, video_name+".mp4")
     print("\n\nVideo saved as:", save_path, "\n\n")
     status("swap successful!")
 
