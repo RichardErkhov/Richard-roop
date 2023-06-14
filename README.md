@@ -1,6 +1,11 @@
 # Join the discord server (this is not official roop server!) https://discord.gg/hzrJBGPpgN
 Take a video and replace the face in it with a face of your choice. You only need one image of the desired face. No dataset, no training.
 
+Also allow row render (original, faceswap, enchance face via codeformer):
+
+![demo-gif](demo_faceswap_codeformer.jpg)
+
+
 # easy installation guide for windows users
 ```
 1) install visual studio 2022 with desktop development C++ and python development (not sure about python development)
@@ -61,6 +66,7 @@ It's recommended to set settings in options/codeformer.json like:
     "upscale": 1
 }
 ```
+
 
 
 # Special thanks
