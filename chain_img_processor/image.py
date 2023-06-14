@@ -4,7 +4,7 @@ from termcolor import colored, cprint
 
 from typing import Any
 
-version = "3.1.2"
+version = "4.0.0"
 
 
 class ChainImgProcessor(JaaCore):
@@ -20,6 +20,8 @@ class ChainImgProcessor(JaaCore):
         self.init_on_start = ""
 
         self.inited_processors = []
+
+        self.is_demo_row_render = False
 
     def process_plugin_manifest(self, modname, manifest):
         # adding processors from plugin manifest
@@ -53,11 +55,44 @@ class ChainImgProcessor(JaaCore):
                 if not proc_id in self.inited_processors:
                     self.init_processor(proc_id)
 
+
+
         # run processing
+        if self.is_demo_row_render:
+            import cv2
+            import numpy as np
+            height, width, channels = img.shape
+            img_blank = np.zeros((height+30, width*(1+len(chain_ar)), 3), dtype=np.uint8)
+            img_blank.fill(255)
+
+            y = 30
+            x = 0
+            img_blank[y:y + height, x:x + width] = img
+
+            # Set the font scale and thickness
+            font_scale = 1
+            thickness = 2
+
+            # Set the font face to a monospace font
+            font_face = cv2.FONT_HERSHEY_SIMPLEX
+
+            cv2.putText(img_blank, "original", (x+4, y-7), font_face, font_scale, (0, 0, 0), thickness)
+
+
+        i = 0
         for proc_id in chain_ar:
+            i += 1
             if proc_id != "":
                 #img = self.processors[proc_id][1](self, img, params) # params can be modified inside
+                y = 30
                 img = self.processors_objects[proc_id][thread_index].process(img,params)
+                if self.is_demo_row_render:
+                    x = width*i
+                    img_blank[y:y + height, x:x + width] = img
+                    cv2.putText(img_blank, proc_id, (x + 4, y - 7), font_face, font_scale, (0, 0, 0), thickness)
+
+        if self.is_demo_row_render:
+            return img_blank, params
 
         return img, params
 

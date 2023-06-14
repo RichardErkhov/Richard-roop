@@ -6,7 +6,7 @@ from tqdm import tqdm
 import os
 from roop.analyser import get_face_single, get_face_many
 
-from chain_video_processor import ChainVideoProcessor, get_single_video_processor
+from chain_img_processor import ChainVideoProcessor, get_single_video_processor
 # video_proc:ChainVideoProcessor = None
 #
 # if video_proc is None:
@@ -114,5 +114,5 @@ def process_video_gpu(source_img, source_video, out, fps, gpu_threads, all_faces
                                #chain="faceswap", # auto set chain based on settings/core.json file
                                params_frame_gen_func=params_make_func,
                                #video_audio=target_path if not preview else f"{output_dir}{sep}{video_name_full}"
-                               video_codec = codec
+                               #video_codec = codec
                                )
