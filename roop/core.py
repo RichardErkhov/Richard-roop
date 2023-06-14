@@ -174,6 +174,12 @@ def toggle_all_faces():
 def toggle_keep_frames():
     args['keep_frames'] = int(keep_frames.get())
 
+def toggle_row_demo_render():
+    #args['keep_frames'] = int(keep_frames.get())
+    global videoproc
+    videoproc.is_demo_row_render = videoproc.plugin_options("core")["is_demo_row_render"] = row_demo_render.get() == 1
+    videoproc.save_plugin_options("core",videoproc.plugin_options("core"))
+    print(videoproc.plugin_options("core"))
 
 def save_file():
     filename, ext = 'output.mp4', '.mp4'
@@ -255,10 +261,11 @@ def start():
 
 
 def run():
-    global status_label, window, all_faces, limit_fps, keep_frames
+    global status_label, window, all_faces, limit_fps, keep_frames, row_demo_render, videoproc
 
     from chain_img_processor import get_single_video_processor
     videoproc = get_single_video_processor() # get processor to warmup
+
 
     pre_check()
     limit_resources()
@@ -300,6 +307,14 @@ def run():
     keep_frames = tk.IntVar(None, args['keep_frames'])
     frames_checkbox = tk.Checkbutton(window, anchor="w", relief="groove", activebackground="#2d3436", activeforeground="#74b9ff", selectcolor="black", text="Keep frames dir", fg="#dfe6e9", borderwidth=0, highlightthickness=0, bg="#2d3436", variable=keep_frames, command=toggle_keep_frames)
     frames_checkbox.place(x=60,y=450,width=240,height=31)
+
+    # Make demo row video checkbox
+    row_demo_render = tk.IntVar(None, value=1 if videoproc.plugin_options("core").get("is_demo_row_render") else 0)
+    row_demo_render_checkbox = tk.Checkbutton(window, anchor="w", relief="groove", activebackground="#2d3436",
+                                     activeforeground="#74b9ff", selectcolor="black", text="Render video with stages in a row",
+                                     fg="#dfe6e9", borderwidth=0, highlightthickness=0, bg="#2d3436",
+                                     variable=row_demo_render, command=toggle_row_demo_render)
+    row_demo_render_checkbox.place(x=60, y=525, width=240, height=31)
 
     # Start button
     start_button = tk.Button(window, text="Start", bg="#f1c40f", relief="flat", borderwidth=0, highlightthickness=0, command=lambda: [save_file(), start()])
