@@ -1,7 +1,7 @@
 # Join the discord server (this is not official roop server!) https://discord.gg/hzrJBGPpgN
 Take a video and replace the face in it with a face of your choice. You only need one image of the desired face. No dataset, no training.
 
-Also allow row render (original, faceswap, enchance face via codeformer):
+Also allow row render (original, faceswap, enchance face via codeformer or gfpgan):
 
 ![demo-gif](demo_faceswap_codeformer.jpg)
 
@@ -45,7 +45,17 @@ amount of threads = (GPU VRAM - 1)/800
 
 # Face enchancement
 
-You can also apply face enchancement by codeformer (slow!!)
+You can also apply face enchancement by codeformer or gfpgan (slow!!)
+
+## For gfpgan (slightly faster then codeformer)
+
+To do:
+- In options/core.json change "default_chain": "faceswap,gfpgan"
+
+Or if you want just enhance your video:
+- In options/core.json change "default_chain": "codeformer"
+
+## For codeformer
 
 To do:
 - Download plugin here: https://github.com/janvarev/chain-img-plugin-codeformer
