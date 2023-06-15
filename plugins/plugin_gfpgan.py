@@ -1,11 +1,7 @@
 # Gfpgan enchance plugin
 # a lot of code from original roop, next branch
 
-import urllib
-from typing import List, Any
-
-from tqdm import tqdm
-
+from typing import Any
 from chain_img_processor import ChainImgProcessor, ChainImgPlugin
 import os
 import threading
@@ -27,20 +23,10 @@ def start(core:ChainImgProcessor):
 def start_with_options(core:ChainImgProcessor, manifest:dict):
     pass
 
-def conditional_download(download_directory_path: str, urls: List[str]) -> None:
-    if not os.path.exists(download_directory_path):
-        os.makedirs(download_directory_path)
-    for url in urls:
-        download_file_path = os.path.join(download_directory_path, os.path.basename(url))
-        if not os.path.exists(download_file_path):
-            request = urllib.request.urlopen(url)
-            total = int(request.headers.get('Content-Length', 0))
-            with tqdm(total=total, desc='Downloading', unit='B', unit_scale=True, unit_divisor=1024) as progress:
-                urllib.request.urlretrieve(url, download_file_path, reporthook=lambda count, block_size, total_size: progress.update(block_size))
-
 class PluginGfpgan(ChainImgPlugin):
     def init_plugin(self):
         import gfpgan
+        from roop.utils import conditional_download
         conditional_download("./models",
                              ['https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth'])
         #pass
