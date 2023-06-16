@@ -1,6 +1,18 @@
 import os
 import shutil
 
+def conditional_download(download_directory_path: str, urls: list) -> None:
+    from urllib.request import urlopen, urlretrieve
+    from tqdm import tqdm
+    if not os.path.exists(download_directory_path):
+        os.makedirs(download_directory_path)
+    for url in urls:
+        download_file_path = os.path.join(download_directory_path, os.path.basename(url))
+        if not os.path.exists(download_file_path):
+            request = urlopen(url)
+            total = int(request.headers.get('Content-Length', 0))
+            with tqdm(total=total, desc='Downloading', unit='B', unit_scale=True, unit_divisor=1024) as progress:
+                urlretrieve(url, download_file_path, reporthook=lambda count, block_size, total_size: progress.update(block_size))
 
 def path(string):
     if os.name == "nt":

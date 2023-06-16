@@ -23,7 +23,7 @@ from roop.gpu_optimizer import process_video_gpu
 
 import roop.globals
 from roop.swapper import process_video, process_img
-from roop.utils import is_img, detect_fps, set_fps, create_video, add_audio, extract_frames, rreplace
+from roop.utils import is_img, detect_fps, set_fps, create_video, add_audio, extract_frames, rreplace, conditional_download
 from roop.analyser import get_face_single
 
 if 'ROCMExecutionProvider' in roop.globals.providers:
@@ -69,9 +69,6 @@ def pre_check():
         quit('Python version is not supported - please upgrade to 3.9 or higher')
     if not shutil.which('ffmpeg'):
         quit('ffmpeg is not installed!')
-    model_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../inswapper_128.onnx')
-    if not os.path.isfile(model_path):
-        quit('File "inswapper_128.onnx" does not exist!')
     if '--gpu' in sys.argv:
         NVIDIA_PROVIDERS = ['CUDAExecutionProvider', 'TensorrtExecutionProvider']
         if len(list(set(roop.globals.providers) - set(NVIDIA_PROVIDERS))) == 1:
@@ -263,6 +260,8 @@ def run():
     videoproc = get_single_video_processor() # get processor to warmup
 
 
+    conditional_download("models", ["https://huggingface.co/deepinsight/inswapper/resolve/main/inswapper_128.onnx"])
+    # side-note: this huggingface account isn't owned by insightface, see: https://github.com/deepinsight/insightface/issues/2339
     pre_check()
     limit_resources()
 
