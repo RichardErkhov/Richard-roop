@@ -103,8 +103,9 @@ def start_processing(fps, target_path):
                           roop.globals.all_faces,
                           codec = args['codec'])
         if args['keep_frames']:
-            os.makedirs(os.path.join(os.path.dirname(args['target_path']), "output_frames"), exist_ok=True)
-            extract_frames(os.path.join(os.path.dirname(args['target_path']), 'output.mp4'), os.path.join(os.path.dirname(args['target_path']), "output_frames"))
+            target_dir = os.path.dirname(args['target_path'])
+            os.makedirs(os.path.join(target_dir, "output_frames"), exist_ok=True)
+            extract_frames(os.path.join(target_dir, 'output.mp4'), os.path.join(target_dir, "output_frames"))
         return
     frame_paths = args["frame_paths"]
     n = len(frame_paths)//(args['cores_count'])
@@ -199,12 +200,11 @@ def start():
     elif not args['target_path'] or not os.path.isfile(args['target_path']):
         print("\n[WARNING] Please select a video/image to swap face in.")
         return
-    if not args['output_file']:
-        target_path = args['target_path']
-        args['output_file'] = rreplace(target_path, "/", "/swapped-", 1) if "/" in target_path else "swapped-" + target_path
     global pool
     pool = mp.Pool(args['cores_count'])
     target_path = args['target_path']
+    if not args['output_file']:
+        args['output_file'] = rreplace(path=target_path, prefix="swapped-", postfix=".mp4")
     test_face = get_face_single(cv2.imread(args['source_img']))
     if not test_face:
         print("\n[WARNING] No face detected in source image. Please try with another one.\n")
