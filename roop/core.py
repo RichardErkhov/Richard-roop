@@ -260,7 +260,7 @@ def run():
     videoproc = get_single_video_processor() # get processor to warmup
 
 
-    conditional_download("models", ["https://huggingface.co/deepinsight/inswapper/resolve/main/inswapper_128.onnx"])
+    conditional_download(os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "models"), ["https://huggingface.co/deepinsight/inswapper/resolve/main/inswapper_128.onnx"])
     # side-note: this huggingface account isn't owned by insightface, see: https://github.com/deepinsight/insightface/issues/2339
     pre_check()
     limit_resources()
