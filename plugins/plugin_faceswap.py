@@ -37,11 +37,13 @@ class Faceswap(ChainImgPlugin):
                 for face in many_faces:
                     frame = swap.get(frame, face, params.get("source_face"), paste_back=True)
                 yes_face = True
+                params["faces"] = many_faces
         else:
             face = get_face_single(frame)
             if face:
                 frame = swap.get(frame, face, params.get("source_face"), paste_back=True)
                 yes_face = True
+                params["faces"] = [face]
 
         params["yes_face"] = yes_face
 

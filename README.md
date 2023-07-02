@@ -77,6 +77,15 @@ It's recommended to set settings in options/codeformer.json like:
 }
 ```
 
+### For gfpganonnx
+
+Effective implementation of GFPGAN on ONNX (I gain 2.5x speedup)
+
+To use: 
+- convert GFPGAN model to ONNX format https://github.com/xuanandsix/GFPGAN-onnxruntime-demo/tree/main
+- your resulted model must be placed as `./models/GFPGANv1.3.onnx`
+- In options/core.json change "default_chain": "faceswap,gfpganonnx"
+- Note: If you wanna just ehchance face on current video, use "default_chain": "gfpganonnx"
 
 
 # Special thanks
