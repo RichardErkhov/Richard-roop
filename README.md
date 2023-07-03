@@ -50,10 +50,10 @@ You can also apply face enchancement by codeformer or gfpgan (slow!!)
 ## For gfpgan (slightly faster then codeformer)
 
 To do:
-- In options/core.json change "default_chain": "faceswap,gfpgan"
+- In options/core.json change "default_chain": "facedetect,faceswap,gfpgan"
 
 Or if you want just enhance your video:
-- In options/core.json change "default_chain": "codeformer"
+- In options/core.json change "default_chain": "facedetect,gfpgan"
 
 ## For codeformer
 
@@ -61,7 +61,7 @@ To do:
 - Download plugin here: https://github.com/janvarev/chain-img-plugin-codeformer
 - Copy it to plugins folder
 - Install requirements.txt
-- In options/core.json change "default_chain": "faceswap,codeformer"
+- In options/core.json change "default_chain": "facedetect,faceswap,codeformer"
 
 Or if you want just enhance your video:
 - In options/core.json change "default_chain": "codeformer"
@@ -84,8 +84,8 @@ Effective implementation of GFPGAN on ONNX (I gain 2.5x speedup)
 To use: 
 - convert GFPGAN model to ONNX format https://github.com/xuanandsix/GFPGAN-onnxruntime-demo/tree/main
 - your resulted model must be placed as `./models/GFPGANv1.3.onnx`
-- In options/core.json change "default_chain": "faceswap,gfpganonnx"
-- Note: If you wanna just ehchance face on current video, use "default_chain": "gfpganonnx"
+- In options/core.json change "default_chain": "facedetect,faceswap,gfpganonnx"
+- Note: If you wanna just ehchance face on current video, use "default_chain": "facedetect,gfpganonnx"
 
 
 # Special thanks
