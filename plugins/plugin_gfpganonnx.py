@@ -174,17 +174,9 @@ class PluginGfpganOnnx(ChainImgPlugin):
     def process(self, frame, params: dict):
 
 
-        if params.get("yes_face") is None:  # we don't know is there face or not
-            from roop.analyser import get_face_single, get_face_many
+        if params.get("yes_face") == False: return frame # no face, no process
 
-            faces = get_face_many(frame)
-            if len(faces) > 0:
-                params["yes_face"] = True
-            else:
-                params["yes_face"] = False
-            params["faces"] = faces
-
-        if params.get("yes_face") == False: return frame
+        if params.get("yes_face") is None: raise ValueError("Please, add 'facedetect' in chain before 'gfpganonnx' to detect faces")
 
         frame2 = self.face_enchancer.process_image(frame, params["faces"])
 

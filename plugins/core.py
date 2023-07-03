@@ -7,11 +7,11 @@ from chain_img_processor import ChainImgProcessor
 def start(core:ChainImgProcessor):
     manifest = {
         "name": "Core plugin",
-        "version": "2.0",
+        "version": "2.1",
 
         "default_options": {
-            "default_chain": "faceswap", # default chain to run
-            "init_on_start": "faceswap", # init these processors on start
+            "default_chain": "facedetect,faceswap", # default chain to run
+            "init_on_start": "", # init these processors on start
             "is_demo_row_render": False,
         },
 
