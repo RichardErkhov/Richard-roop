@@ -87,6 +87,20 @@ To use:
 - In options/core.json change "default_chain": "facedetect,faceswap,gfpganonnx"
 - Note: If you wanna just ehchance face on current video, use "default_chain": "facedetect,gfpganonnx"
 
+# Faceswap selective
+
+Allow you to selective swap faces on img/video, the same as in "refacer" project
+
+To use:
+- run program at least once
+- In options/core.json change "default_chain": "facedetect,faceswap_selective" (you can use enchancer if you want)
+- In options/plugin_faceswap_selective.json change "selective" to "char1.jpg->new1.jpg||char2.jpg->new2.jpg", where
+  - char1.jpg is path to file with someone face from original video
+  - new1.jpg is path to file with face that replace char1
+  - -> is separator
+  - || is separator for groups (you can set char2,new2 etc.)
+  - NOTE: face in roop interface will not being used in this case
+- Each face on scene will be compared to reference in "selective" option. If distance is lower than "max_distance" - face will be replaced (try to adjust "max_distance" if you have problems). 
 
 # Special thanks
 
