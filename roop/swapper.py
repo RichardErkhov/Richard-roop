@@ -62,8 +62,8 @@ def process_img(source_img, target_path, output_file):
     face = get_face_single(frame)
     source_face = get_face_single(cv2.imread(source_img))
     #result = get_face_swapper().get(frame, face, source_face, paste_back=True)
-    from chain_img_processor import get_single_image_processor
-    img_processor = get_single_image_processor()
+    from chain_img_processor import get_single_video_processor
+    img_processor = get_single_video_processor()  # get processor to warmup
 
     result, params = img_processor.run_chain(frame, {"source_face":source_face,"all_faces":roop.globals.all_faces})
 

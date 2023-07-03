@@ -24,27 +24,15 @@ class Faceswap(ChainImgPlugin):
         # params can be used to transfer some img info to next processors
         if params.get("yes_face") == False: return frame # no face, no process
 
-        from roop.analyser import get_face_many, get_face_single
+        if params.get("yes_face") is None: raise ValueError("Please, add 'facedetect' in chain before 'faceswap' to detect faces")
+
         from roop.swapper import get_face_swapper
 
-        all_faces = params.get("all_faces")
         swap = get_face_swapper()
 
-        yes_face = False
-        if all_faces:
-            many_faces = get_face_many(frame)
-            if many_faces:
-                for face in many_faces:
-                    frame = swap.get(frame, face, params.get("source_face"), paste_back=True)
-                yes_face = True
-                params["faces"] = many_faces
-        else:
-            face = get_face_single(frame)
-            if face:
-                frame = swap.get(frame, face, params.get("source_face"), paste_back=True)
-                yes_face = True
-                params["faces"] = [face]
+        many_faces = params.get("faces")
 
-        params["yes_face"] = yes_face
+        for face in many_faces:
+            frame = swap.get(frame, face, params.get("source_face"), paste_back=True)
 
         return frame
