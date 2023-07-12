@@ -5,6 +5,7 @@ Also allow row render (original, faceswap, enchance face via codeformer or gfpga
 
 ![demo-gif](demo_faceswap_codeformer.jpg)
 
+[colab link](https://gist.github.com/phineas-pta/41f68a03b3c0b8fb3e1fdf98a4f9cbde)
 
 # easy installation guide for windows users
 ```
