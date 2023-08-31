@@ -260,7 +260,7 @@ def run():
     videoproc = get_single_video_processor() # get processor to warmup
 
 
-    conditional_download(os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "models"), ["https://huggingface.co/deepinsight/inswapper/resolve/main/inswapper_128.onnx"])
+    conditional_download(os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "models"), ["https://github.com/RichardErkhov/FastFaceSwap/releases/download/model/inswapper_128.onnx"])
     # side-note: this huggingface account isn't owned by insightface, see: https://github.com/deepinsight/insightface/issues/2339
     pre_check()
     limit_resources()
@@ -274,11 +274,6 @@ def run():
     window.title("roop")
     window.configure(bg="#2d3436")
     window.resizable(width=False, height=False)
-
-    # Contact information
-    support_link = tk.Label(window, text="Donate to project <3", fg="#fd79a8", bg="#2d3436", cursor="hand2", font=("Arial", 8))
-    support_link.place(x=180,y=20,width=250,height=30)
-    support_link.bind("<Button-1>", lambda e: webbrowser.open("https://github.com/sponsors/s0md3v"))
 
     # Select a face button
     face_button = tk.Button(window, text="Select a face", command=select_face, bg="#2d3436", fg="#74b9ff", highlightthickness=4, relief="flat", highlightbackground="#74b9ff", activebackground="#74b9ff", borderwidth=4)
